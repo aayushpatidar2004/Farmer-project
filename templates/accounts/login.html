@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Farmer Login — Smart Farmer{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow rounded-4 overflow-hidden">
+                <div class="card-header bg-success text-white py-4 text-center">
+                    <h3 class="fw-bold mb-0"><i class="bi bi-box-arrow-in-right me-2"></i>Farmer Login</h3>
+                    <p class="small text-light mb-0 mt-1">Access your crop management dashboard</p>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" action="{% url 'accounts:login' %}">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger small">
+                                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label fw-semibold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-person text-muted"></i></span>
+                                <input type="text" name="username" class="form-control" placeholder="Enter username" id="id_username" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="id_password" class="form-label fw-semibold">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-lock text-muted"></i></span>
+                                <input type="password" name="password" class="form-control" placeholder="Enter password" id="id_password" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 fw-bold py-2 shadow-sm">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                        </button>
+                    </form>
+                    <hr class="my-4">
+                    <div class="text-center text-muted small">
+                        Don't have an account? <a href="{% url 'accounts:register' %}" class="text-success fw-bold text-decoration-none">Register here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

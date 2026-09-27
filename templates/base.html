@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Smart Farmer Assistance & Crop Management System{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center fw-bold fs-4" href="{% url 'home' %}">
+                <i class="bi bi-tree-fill me-2 fs-3 text-warning"></i>
+                <span>Smart Farmer</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'accounts' and request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'accounts:dashboard' %}">Dashboard</a>
+                    </li>
+                    {% if user.is_authenticated and user.farmer_profile.role == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" href="{% url 'accounts:admin_dashboard' %}">Admin Dashboard</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="farmerFeaturesDropdown" role="button" data-bs-toggle="dropdown">
+                            Features
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'crops:list' %}"><i class="bi bi-flower2 text-success me-2"></i>My Crops</a></li>
+                            <li><a class="dropdown-item" href="{% url 'weather:dashboard' %}"><i class="bi bi-cloud-sun text-primary me-2"></i>Weather Forecast</a></li>
+                            <li><a class="dropdown-item" href="{% url 'soil:list' %}"><i class="bi bi-layers text-warning me-2"></i>Soil Records</a></li>
+                            <li><a class="dropdown-item" href="{% url 'recommendations:index' %}"><i class="bi bi-lightbulb text-info me-2"></i>Crop Recommendation</a></li>
+                            <li><a class="dropdown-item" href="{% url 'diseases:list' %}"><i class="bi bi-bug text-danger me-2"></i>Disease Database</a></li>
+                            <li><a class="dropdown-item" href="{% url 'market:list' %}"><i class="bi bi-currency-rupee text-success me-2"></i>Market Prices</a></li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff or user.farmer_profile.role == 'admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link text-warning fw-semibold" href="/admin/" target="_blank">
+                                <i class="bi bi-shield-lock me-1"></i>Admin Portal
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center fw-semibold text-white" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1 fs-5"></i> {{ user.first_name|default:user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>My Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'crops:my_images' %}"><i class="bi bi-images me-2"></i>My Plant Photos</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url 'accounts:logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" href="{% url 'accounts:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn btn-warning text-dark fw-bold px-3" href="{% url 'accounts:register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                    {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill me-2"></i>{% endif %}
+                    {% if message.tags == 'error' or message.tags == 'danger' %}<i class="bi bi-exclamation-triangle-fill me-2"></i>{% endif %}
+                    {% if message.tags == 'info' %}<i class="bi bi-info-circle-fill me-2"></i>{% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white pt-5 pb-4 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-success fw-bold"><i class="bi bi-tree-fill me-2"></i>Smart Farmer System</h5>
+                    <p class="text-secondary small">Empowering farmers with smart crop management, data-driven crop recommendations, live weather insights, disease remedies, and real-time market trends.</p>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h6 class="text-white fw-bold mb-3">Quick Links</h6>
+                    <ul class="list-unstyled text-secondary small">
+                        <li class="mb-2"><a href="{% url 'home' %}" class="text-secondary text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="{% url 'about' %}" class="text-secondary text-decoration-none">About Us</a></li>
+                        <li class="mb-2"><a href="{% url 'contact' %}" class="text-secondary text-decoration-none">Contact Us</a></li>
+                        <li class="mb-2"><a href="{% url 'recommendations:index' %}" class="text-secondary text-decoration-none">Crop Recommendation</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-bold mb-3">Modules</h6>
+                    <ul class="list-unstyled text-secondary small">
+                        <li class="mb-2"><a href="{% url 'weather:dashboard' %}" class="text-secondary text-decoration-none">Weather Dashboard</a></li>
+                        <li class="mb-2"><a href="{% url 'diseases:list' %}" class="text-secondary text-decoration-none">Disease Database</a></li>
+                        <li class="mb-2"><a href="{% url 'market:list' %}" class="text-secondary text-decoration-none">Agricultural Market Prices</a></li>
+                        <li class="mb-2"><a href="{% url 'soil:list' %}" class="text-secondary text-decoration-none">Soil Analysis</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h6 class="text-white fw-bold mb-3">Contact & Support</h6>
+                    <p class="text-secondary small mb-1"><i class="bi bi-geo-alt text-success me-2"></i>Indore, Madhya Pradesh, India</p>
+                    <p class="text-secondary small mb-1"><i class="bi bi-envelope text-success me-2"></i>patidaraayush20@gmail.com</p>
+                    <p class="text-secondary small"><i class="bi bi-telephone text-success me-2"></i>+91 9926500357</p>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-secondary small">
+                <p class="mb-0">&copy; 2026 Smart Farmer Assistance & Crop Management System. All rights reserved.</p>
+                <p class="mb-0">Built with Python, Django, DRF, MySQL & Bootstrap 5</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

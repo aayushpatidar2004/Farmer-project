@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} — Smart Farmer{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-success text-white py-4">
+                    <h4 class="fw-bold mb-0"><i class="bi bi-currency-rupee me-2"></i>{{ title }}</h4>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Crop Name *</label>
+                                {{ form.crop_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Market / Mandi Name *</label>
+                                {{ form.market_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Location / District *</label>
+                                {{ form.location }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Price (₹) *</label>
+                                {{ form.price }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Unit *</label>
+                                {{ form.unit }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Date *</label>
+                                {{ form.date }}
+                            </div>
+                            <div class="col-12 mt-3">
+                                <div class="form-check">
+                                    {{ form.is_sample_data }}
+                                    <label class="form-check-label fw-semibold" for="{{ form.is_sample_data.id_for_label }}">
+                                        Mark as Demo / Sample Data
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex justify-content-end gap-2">
+                            <a href="{% url 'market:list' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success fw-bold px-4"><i class="bi bi-save me-1"></i>Save Price Record</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

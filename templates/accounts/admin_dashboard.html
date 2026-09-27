@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard — Smart Farmer{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom">
+        <div>
+            <h2 class="fw-bold text-success mb-1"><i class="bi bi-shield-lock me-2"></i>Admin Dashboard</h2>
+            <p class="text-muted mb-0">Welcome, {{ profile.display_name }}. Manage the platform and operational data.</p>
+        </div>
+        <a href="/admin/" class="btn btn-dark fw-bold" target="_blank">
+            <i class="bi bi-gear me-1"></i>Open Django Admin
+        </a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Farmers</span>
+                        <i class="bi bi-people-fill text-primary fs-4"></i>
+                    </div>
+                    <h3 class="fw-bold mb-0">{{ farmer_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Crops</span>
+                        <i class="bi bi-flower2 text-success fs-4"></i>
+                    </div>
+                    <h3 class="fw-bold mb-0">{{ crop_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Diseases</span>
+                        <i class="bi bi-bug text-danger fs-4"></i>
+                    </div>
+                    <h3 class="fw-bold mb-0">{{ disease_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Pesticides</span>
+                        <i class="bi bi-droplet-half text-info fs-4"></i>
+                    </div>
+                    <h3 class="fw-bold mb-0">{{ pesticide_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Market Prices</span>
+                        <i class="bi bi-currency-rupee text-warning fs-4"></i>
+                    </div>
+                    <h3 class="fw-bold mb-0">{{ market_price_count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Soil Data</span>
+                        <i class="bi bi-layers text-secondary fs-4"></i>
+                    </div>
+                    <h3 class="fw-bold mb-0">{{ soil_record_count }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-success text-white fw-semibold">Platform Management</div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'accounts:dashboard' %}" class="list-group-item list-group-item-action">Farmer Dashboard</a>
+                    <a href="{% url 'crops:list' %}" class="list-group-item list-group-item-action">Manage Crops</a>
+                    <a href="{% url 'soil:list' %}" class="list-group-item list-group-item-action">Manage Soil Data</a>
+                    <a href="{% url 'diseases:list' %}" class="list-group-item list-group-item-action">Manage Diseases</a>
+                    <a href="{% url 'market:list' %}" class="list-group-item list-group-item-action">Manage Market Prices</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-dark text-white fw-semibold">Operational Tools</div>
+                <div class="list-group list-group-flush">
+                    <a href="/admin/" class="list-group-item list-group-item-action">Django Admin Panel</a>
+                    <a href="{% url 'market:add' %}" class="list-group-item list-group-item-action">Add Market Price</a>
+                    <a href="{% url 'soil:add' %}" class="list-group-item list-group-item-action">Add Soil Data</a>
+                    <a href="{% url 'crops:add' %}" class="list-group-item list-group-item-action">Add Crop Record</a>
+                    <a href="{% url 'accounts:profile' %}" class="list-group-item list-group-item-action">Profile Settings</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

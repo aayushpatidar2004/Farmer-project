@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Weather Dashboard — Smart Farmer{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom">
+        <div>
+            <h2 class="fw-bold text-success mb-1"><i class="bi bi-cloud-sun me-2"></i>Weather Dashboard</h2>
+            <p class="text-muted mb-0">Live weather forecasts powered by <strong>Open-Meteo API</strong> (Free & No API Key Required).</p>
+        </div>
+    </div>
+
+    <!-- Search Card -->
+    <div class="card border-0 shadow-sm mb-4 rounded-4">
+        <div class="card-body p-4">
+            <form method="get" action="{% url 'weather:dashboard' %}" class="row g-3">
+                <div class="col-md-9">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-light"><i class="bi bi-geo-alt text-danger"></i></span>
+                        <input type="text" name="city" class="form-control" placeholder="Enter City Name (e.g. New Delhi, Mumbai, Pune, Jaipur, London)..." value="{{ city }}" required>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm">
+                        <i class="bi bi-search me-1"></i>Search Weather
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    {% if error %}
+        <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endif %}
+
+    <!-- Weather Display Card -->
+    {% if weather and location %}
+        <div class="row g-4">
+            <!-- Main Temperature Card -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 text-white bg-{{ weather.icon_bg }} p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h3 class="fw-bold mb-0">{{ location.name }}</h3>
+                            <p class="small opacity-75 mb-0">{{ location.admin1 }}{% if location.admin1 %}, {% endif %}{{ location.country }}</p>
+                        </div>
+                        <span class="badge bg-white text-dark px-3 py-2 fw-semibold">Live Weather</span>
+                    </div>
+
+                    <div class="d-flex align-items-center my-4">
+                        <i class="bi {{ weather.icon }} display-1 me-4"></i>
+                        <div>
+                            <h1 class="display-3 fw-bold mb-0">{{ weather.temperature }}°C</h1>
+                            <p class="fs-5 mb-0 fw-semibold">{{ weather.description }}</p>
+                            <p class="small opacity-75 mb-0">Feels like {{ weather.feels_like }}°C</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-top border-white border-opacity-25 small opacity-90">
+                        <i class="bi bi-clock me-1"></i> Timezone: {{ weather.timezone }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail Metrics -->
+            <div class="col-lg-6">
+                <div class="row g-3 h-100">
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm rounded-3 p-3 text-center bg-white h-100">
+                            <i class="bi bi-droplet-fill text-primary display-6 mb-2"></i>
+                            <h6 class="text-muted small text-uppercase">Humidity</h6>
+                            <h4 class="fw-bold text-dark mb-0">{{ weather.humidity }}%</h4>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm rounded-3 p-3 text-center bg-white h-100">
+                            <i class="bi bi-wind text-info display-6 mb-2"></i>
+                            <h6 class="text-muted small text-uppercase">Wind Speed</h6>
+                            <h4 class="fw-bold text-dark mb-0">{{ weather.wind_speed }} km/h</h4>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm rounded-3 p-3 text-center bg-white h-100">
+                            <i class="bi bi-cloud-rain-fill text-primary display-6 mb-2"></i>
+                            <h6 class="text-muted small text-uppercase">Precipitation</h6>
+                            <h4 class="fw-bold text-dark mb-0">{{ weather.precipitation }} mm</h4>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card border-0 shadow-sm rounded-3 p-3 text-center bg-white h-100">
+                            <i class="bi bi-speedometer text-secondary display-6 mb-2"></i>
+                            <h6 class="text-muted small text-uppercase">Pressure</h6>
+                            <h4 class="fw-bold text-dark mb-0">{{ weather.pressure }} hPa</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elif not city %}
+        <!-- Default State -->
+        <div class="card border-0 shadow-sm text-center py-5 rounded-4">
+            <div class="card-body">
+                <i class="bi bi-cloud-sun display-1 text-success mb-3"></i>
+                <h4 class="fw-bold text-dark">Enter your location above</h4>
+                <p class="text-muted">Type any city name to get real-time weather metrics tailored for agricultural planning.</p>
+                <div class="d-flex justify-content-center gap-2 mt-3">
+                    <a href="?city=Delhi" class="btn btn-outline-secondary btn-sm">Delhi</a>
+                    <a href="?city=Mumbai" class="btn btn-outline-secondary btn-sm">Mumbai</a>
+                    <a href="?city=Pune" class="btn btn-outline-secondary btn-sm">Pune</a>
+                    <a href="?city=Jaipur" class="btn btn-outline-secondary btn-sm">Jaipur</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

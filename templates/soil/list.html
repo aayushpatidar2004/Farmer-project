@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Soil Records — Smart Farmer{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom">
+        <div>
+            <h2 class="fw-bold text-success mb-1"><i class="bi bi-layers me-2"></i>Soil Records</h2>
+            <p class="text-muted mb-0">Record and analyze soil pH, Nitrogen, Phosphorus, Potassium, and moisture levels.</p>
+        </div>
+        <div class="mt-3 mt-md-0">
+            <a href="{% url 'soil:add' %}" class="btn btn-success fw-bold shadow-sm">
+                <i class="bi bi-plus-circle me-1"></i>Add Soil Data
+            </a>
+        </div>
+    </div>
+
+    {% if soil_records %}
+        <div class="row g-4">
+            {% for record in soil_records %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-3">
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h4 class="fw-bold text-success mb-0">{{ record.get_soil_type_display }} Soil</h4>
+                                <span class="badge bg-primary px-2 py-1">pH {{ record.ph }}</span>
+                            </div>
+                            <p class="small text-muted mb-3"><i class="bi bi-calendar me-1"></i>Recorded: {{ record.created_at|date:"M d, Y" }}</p>
+
+                            <div class="bg-light p-3 rounded-3 mb-3 flex-grow-1 small">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Nitrogen (N):</span>
+                                    <span class="fw-bold">{{ record.nitrogen }} kg/ha</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Phosphorus (P):</span>
+                                    <span class="fw-bold">{{ record.phosphorus }} kg/ha</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Potassium (K):</span>
+                                    <span class="fw-bold">{{ record.potassium }} kg/ha</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Moisture:</span>
+                                    <span class="fw-bold">{{ record.moisture }}%</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                                <a href="{% url 'soil:detail' record.pk %}" class="btn btn-sm btn-outline-success fw-bold">Analyze Nutrients</a>
+                                <div>
+                                    <a href="{% url 'soil:edit' record.pk %}" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-pencil"></i></a>
+                                    <a href="{% url 'soil:delete' record.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card border-0 shadow-sm text-center py-5">
+            <div class="card-body">
+                <i class="bi bi-layers display-3 text-muted"></i>
+                <h4 class="fw-bold mt-3">No Soil Records Saved</h4>
+                <p class="text-muted">Enter your soil sample details to analyze nutrient balance and get optimal crop recommendations.</p>
+                <a href="{% url 'soil:add' %}" class="btn btn-success fw-bold"><i class="bi bi-plus-circle me-1"></i>Add Soil Data</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

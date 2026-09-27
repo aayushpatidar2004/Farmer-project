@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart Farmer Assistance & Crop Management System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-success text-white py-5 position-relative overflow-hidden">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fs-6 fw-bold mb-3">
+                    <i class="bi bi-patch-check-fill me-1"></i> Data-Driven Agricultural Assistance
+                </span>
+                <h1 class="display-4 fw-extrabold mb-3">Smart Farming.<br>Better Decisions. Better Crops.</h1>
+                <p class="lead text-light mb-4 opacity-90">
+                    A comprehensive platform for modern farmers to track crops, analyze soil quality, receive rule-based crop recommendations, view real-time weather forecasts, diagnose crop diseases, and monitor agricultural market trends.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'accounts:dashboard' %}" class="btn btn-warning btn-lg px-4 fw-bold text-dark shadow-sm">
+                            <i class="bi bi-speedometer2 me-2"></i>Go to Dashboard
+                        </a>
+                    {% else %}
+                        <a href="{% url 'accounts:register' %}" class="btn btn-warning btn-lg px-4 fw-bold text-dark shadow-sm">
+                            <i class="bi bi-person-plus me-2"></i>Get Started Free
+                        </a>
+                        <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg px-4 fw-semibold">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Farmer Login
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-5 text-center">
+                <div class="bg-white bg-opacity-10 p-4 rounded-4 shadow-lg border border-white border-opacity-25">
+                    <i class="bi bi-cloud-sun-fill text-warning display-1 mb-3"></i>
+                    <h3 class="fw-bold">Free Weather & Soil Insights</h3>
+                    <p class="text-light small">Instant forecasts powered by Open-Meteo & NumPy/Pandas automated crop suitability matching.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Feature Cards -->
+<section class="py-5 bg-light">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-dark">Platform Features</h2>
+            <p class="text-muted">Everything a farmer needs to maximize yield and optimize farm operations</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 hover-card">
+                    <div class="card-body p-4 text-center">
+                        <div class="feature-icon bg-success bg-opacity-10 text-success rounded-circle mx-auto mb-3">
+                            <i class="bi bi-flower2 fs-2"></i>
+                        </div>
+                        <h4 class="card-title fw-bold h5">Crop Management</h4>
+                        <p class="card-text text-muted small">Track sown crops, varieties, irrigation types, growth stages, expected harvest dates, and upload crop health photos.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 hover-card">
+                    <div class="card-body p-4 text-center">
+                        <div class="feature-icon bg-primary bg-opacity-10 text-primary rounded-circle mx-auto mb-3">
+                            <i class="bi bi-cloud-sun fs-2"></i>
+                        </div>
+                        <h4 class="card-title fw-bold h5">Weather Forecasts</h4>
+                        <p class="card-text text-muted small">Access free live weather conditions including temperature, humidity, wind, and precipitation via Open-Meteo.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 hover-card">
+                    <div class="card-body p-4 text-center">
+                        <div class="feature-icon bg-info bg-opacity-10 text-info rounded-circle mx-auto mb-3">
+                            <i class="bi bi-lightbulb fs-2"></i>
+                        </div>
+                        <h4 class="card-title fw-bold h5">Crop Recommendation</h4>
+                        <p class="card-text text-muted small">Data-driven crop recommendations calculated using soil pH, N-P-K nutrient levels, temperature, and rainfall.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 hover-card">
+                    <div class="card-body p-4 text-center">
+                        <div class="feature-icon bg-warning bg-opacity-10 text-warning rounded-circle mx-auto mb-3">
+                            <i class="bi bi-layers fs-2"></i>
+                        </div>
+                        <h4 class="card-title fw-bold h5">Soil Quality Analysis</h4>
+                        <p class="card-text text-muted small">Record soil test results and get NumPy-calculated nutrient adequacy levels for nitrogen, phosphorus, and potassium.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 hover-card">
+                    <div class="card-body p-4 text-center">
+                        <div class="feature-icon bg-danger bg-opacity-10 text-danger rounded-circle mx-auto mb-3">
+                            <i class="bi bi-bug fs-2"></i>
+                        </div>
+                        <h4 class="card-title fw-bold h5">Disease & Treatment DB</h4>
+                        <p class="card-text text-muted small">Search crop diseases, symptoms, causes, preventive steps, and recommended pesticides with dosage & safety guidance.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 hover-card">
+                    <div class="card-body p-4 text-center">
+                        <div class="feature-icon bg-secondary bg-opacity-10 text-dark rounded-circle mx-auto mb-3">
+                            <i class="bi bi-currency-rupee fs-2"></i>
+                        </div>
+                        <h4 class="card-title fw-bold h5">Market Prices</h4>
+                        <p class="card-text text-muted small">Monitor market price records across mandis and locations, filtered by crop name, price unit, and date.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5 bg-white">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-dark">How It Works</h2>
+            <p class="text-muted">Simple 5-step process to transform your farming workflow</p>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md">
+                <div class="p-3">
+                    <div class="step-badge bg-success text-white rounded-circle fs-4 fw-bold mx-auto mb-3">1</div>
+                    <h5 class="fw-bold">Register Account</h5>
+                    <p class="text-muted small">Create your free farmer account in seconds.</p>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="p-3">
+                    <div class="step-badge bg-success text-white rounded-circle fs-4 fw-bold mx-auto mb-3">2</div>
+                    <h5 class="fw-bold">Enter Crop & Soil</h5>
+                    <p class="text-muted small">Record active crops and recent soil test values.</p>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="p-3">
+                    <div class="step-badge bg-success text-white rounded-circle fs-4 fw-bold mx-auto mb-3">3</div>
+                    <h5 class="fw-bold">Check Weather</h5>
+                    <p class="text-muted small">Search your local city for live weather conditions.</p>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="p-3">
+                    <div class="step-badge bg-success text-white rounded-circle fs-4 fw-bold mx-auto mb-3">4</div>
+                    <h5 class="fw-bold">Get Advice</h5>
+                    <p class="text-muted small">Get crop recommendations & disease remedies.</p>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="p-3">
+                    <div class="step-badge bg-success text-white rounded-circle fs-4 fw-bold mx-auto mb-3">5</div>
+                    <h5 class="fw-bold">Track & Sell</h5>
+                    <p class="text-muted small">Monitor market prices and plan your harvest.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

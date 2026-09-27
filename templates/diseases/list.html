@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Crop Disease Database — Smart Farmer{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom">
+        <div>
+            <h2 class="fw-bold text-success mb-1"><i class="bi bi-bug me-2"></i>Crop Disease & Treatment Database</h2>
+            <p class="text-muted mb-0">Search symptoms, preventive practices, and chemical/organic pesticide treatments.</p>
+        </div>
+    </div>
+
+    <!-- Search & Filter Form -->
+    <div class="card border-0 shadow-sm mb-4 rounded-3">
+        <div class="card-body p-4">
+            <form method="get" action="{% url 'diseases:list' %}" class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="q" class="form-control" placeholder="Search disease name, crop, or symptoms..." value="{{ search_query }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select name="crop" class="form-select">
+                        <option value="">All Crops</option>
+                        {% for c in crop_names %}
+                            <option value="{{ c }}" {% if crop_filter == c %}selected{% endif %}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-success fw-bold flex-grow-1"><i class="bi bi-funnel me-1"></i>Search</button>
+                    {% if search_query or crop_filter %}
+                        <a href="{% url 'diseases:list' %}" class="btn btn-outline-secondary">Reset</a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Diseases Grid -->
+    {% if diseases %}
+        <div class="row g-4">
+            {% for d in diseases %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-3">
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-light text-dark border">{{ d.crop_name }}</span>
+                                <span class="badge {{ d.get_severity_badge_class }}">{{ d.get_severity_display }} Severity</span>
+                            </div>
+                            <h4 class="fw-bold text-success mb-2">{{ d.disease_name }}</h4>
+                            <p class="small text-muted mb-3 flex-grow-1">{{ d.symptoms|truncatewords:20 }}</p>
+                            <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                                <a href="{% url 'diseases:detail' d.pk %}" class="btn btn-sm btn-outline-success fw-bold w-100">
+                                    <i class="bi bi-file-text me-1"></i>View Disease & Remedies
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card border-0 shadow-sm text-center py-5">
+            <div class="card-body">
+                <i class="bi bi-bug display-3 text-muted"></i>
+                <h4 class="fw-bold mt-3">No Diseases Found</h4>
+                <p class="text-muted">No records matched your search query. Try running <code>python manage.py load_sample_data</code> to populate sample data.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

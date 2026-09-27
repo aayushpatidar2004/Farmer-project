@@ -1,0 +1,8 @@
+Django>=4.2,<5.0
+djangorestframework>=3.14
+PyMySQL>=1.1
+python-dotenv>=1.0
+requests>=2.31
+Pillow>=10.0
+pandas>=2.0
+numpy>=1.24

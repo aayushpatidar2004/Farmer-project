@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Farmer Profile — Smart Farmer{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-success text-white py-4 d-flex justify-content-between align-items-center">
+                    <h4 class="fw-bold mb-0"><i class="bi bi-person-badge me-2"></i>Farmer Profile</h4>
+                    <a href="{% url 'accounts:edit_profile' %}" class="btn btn-warning btn-sm text-dark fw-bold">
+                        <i class="bi bi-pencil-square me-1"></i>Edit Profile
+                    </a>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex align-items-center mb-4">
+                        {% if profile.profile_pic %}
+                            <img src="{{ profile.profile_pic.url }}" alt="Profile Picture" class="rounded-circle me-4 border border-3 border-success" width="100" height="100" style="object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center me-4" style="width: 100px; height: 100px;">
+                                <i class="bi bi-person-fill display-4"></i>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <h3 class="fw-bold mb-1">{{ profile.display_name }}</h3>
+                            <p class="text-muted mb-1"><i class="bi bi-envelope me-1"></i>{{ user.email }}</p>
+                            <span class="badge bg-success px-3 py-2 fs-6"><i class="bi bi-shield-check me-1"></i>{{ profile.get_role_display }} Account</span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted small text-uppercase">Username</h6>
+                            <p class="fw-semibold">{{ user.username }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted small text-uppercase">Phone Number</h6>
+                            <p class="fw-semibold">{{ profile.phone|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted small text-uppercase">Location</h6>
+                            <p class="fw-semibold">{{ profile.location|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted small text-uppercase">Farm Name</h6>
+                            <p class="fw-semibold">{{ profile.farm_name|default:"Not provided" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted small text-uppercase">Farm Size</h6>
+                            <p class="fw-semibold">{% if profile.farm_size %}{{ profile.farm_size }} Acres{% else %}Not provided{% endif %}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted small text-uppercase">Member Since</h6>
+                            <p class="fw-semibold">{{ user.date_joined|date:"F d, Y" }}</p>
+                        </div>
+                        <div class="col-12">
+                            <h6 class="text-muted small text-uppercase">About / Bio</h6>
+                            <p class="text-secondary mb-0">{{ profile.bio|default:"No bio provided." }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

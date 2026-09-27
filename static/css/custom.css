@@ -1,0 +1,50 @@
+/* Custom Agriculture Theme Styles */
+
+:root {
+    --bs-success-rgb: 25, 135, 84;
+    --bs-primary-rgb: 13, 110, 253;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: #2b2f33;
+}
+
+/* Feature & Hover Cards */
+.hover-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Feature Icon Circles */
+.feature-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Step Badges */
+.step-badge {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hero Overlay */
+.hero-section {
+    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+}
+
+/* Form Customizations */
+.form-control:focus, .form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}

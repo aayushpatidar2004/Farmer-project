@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Soil Nutrient Analysis — Smart Farmer{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 pb-3 border-bottom">
+        <div>
+            <h2 class="fw-bold text-success mb-1"><i class="bi bi-bar-chart-line me-2"></i>Soil Analysis & Health Report</h2>
+            <p class="text-muted mb-0">{{ soil_record.get_soil_type_display }} Soil recorded on {{ soil_record.created_at|date:"F d, Y" }}</p>
+        </div>
+        <div class="mt-3 mt-md-0 d-flex gap-2">
+            <a href="{% url 'recommendations:index' %}" class="btn btn-warning fw-bold text-dark">
+                <i class="bi bi-lightbulb me-1"></i>Get Crop Recommendations
+            </a>
+            <a href="{% url 'soil:edit' soil_record.pk %}" class="btn btn-outline-secondary">Edit</a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Soil Summary -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-3 text-center p-4 bg-white h-100">
+                <i class="bi bi-speedometer2 text-success display-4 mb-2"></i>
+                <h6 class="text-muted small text-uppercase">Soil pH Level</h6>
+                <h2 class="fw-bold text-dark mb-1">{{ soil_record.ph }}</h2>
+                <span class="badge bg-{{ ph_color }} fs-6 px-3 py-2 align-self-center">{{ ph_status }}</span>
+                <p class="small text-muted mt-3 mb-0">Optimal pH for most agricultural crops ranges between 6.0 and 7.5.</p>
+            </div>
+        </div>
+
+        <!-- NumPy Nutrient Scores -->
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm rounded-3 p-4 bg-white h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-cpu text-info me-2"></i>NumPy Nutrient Adequacy Index</h5>
+                <p class="small text-muted mb-4">Nutrient ratios evaluated against standard crop production requirements using NumPy algorithms.</p>
+
+                <!-- Nitrogen -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-semibold">Nitrogen (N): {{ analysis.nitrogen.value }} kg/ha</span>
+                        <span class="badge bg-{{ analysis.nitrogen.color }}">{{ analysis.nitrogen.status }}</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar bg-{{ analysis.nitrogen.color }}" style="width: {{ analysis.nitrogen.percentage }}%;"></div>
+                    </div>
+                </div>
+
+                <!-- Phosphorus -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-semibold">Phosphorus (P): {{ analysis.phosphorus.value }} kg/ha</span>
+                        <span class="badge bg-{{ analysis.phosphorus.color }}">{{ analysis.phosphorus.status }}</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar bg-{{ analysis.phosphorus.color }}" style="width: {{ analysis.phosphorus.percentage }}%;"></div>
+                    </div>
+                </div>
+
+                <!-- Potassium -->
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-semibold">Potassium (K): {{ analysis.potassium.value }} kg/ha</span>
+                        <span class="badge bg-{{ analysis.potassium.color }}">{{ analysis.potassium.status }}</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar bg-{{ analysis.potassium.color }}" style="width: {{ analysis.potassium.percentage }}%;"></div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-2 pt-3 border-top">
+                    <div class="col-6">
+                        <span class="small text-muted">Moisture Content:</span>
+                        <p class="fw-bold text-dark mb-0">{{ soil_record.moisture }}%</p>
+                    </div>
+                    <div class="col-6">
+                        <span class="small text-muted">Organic Matter:</span>
+                        <p class="fw-bold text-dark mb-0">{{ soil_record.organic_matter }}%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

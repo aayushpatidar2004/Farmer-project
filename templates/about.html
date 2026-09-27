@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us — Smart Farmer Assistance System{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="bg-white p-5 rounded-4 shadow-sm">
+                <h1 class="fw-bold text-success mb-3"><i class="bi bi-tree-fill me-2"></i>About Smart Farmer Assistance & Crop Management System</h1>
+                <p class="lead text-secondary mb-4">A complete, modern full-stack web application built using Python, Django, Django REST Framework, MySQL, Pandas, NumPy, and Bootstrap 5.</p>
+                <hr class="my-4">
+
+                <h4 class="fw-bold text-dark mb-3">Our Objective</h4>
+                <p class="text-muted">The main purpose of the platform is to empower farmers by providing a unified digital portal for managing crop cycles, checking live local weather forecasts, conducting soil analysis, receiving data-driven crop recommendations, diagnosing crop diseases, and keeping track of market commodity prices.</p>
+
+                <h4 class="fw-bold text-dark mt-4 mb-3">Key Technical Highlights</h4>
+                <div class="row g-3 my-2">
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <h6 class="fw-bold text-success mb-1"><i class="bi bi-code-square me-2"></i>Django MVC Architecture</h6>
+                            <p class="small text-muted mb-0">Clean app modularization across Accounts, Crops, Weather, Soil, Recommendations, Diseases, and Market.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <h6 class="fw-bold text-primary mb-1"><i class="bi bi-cloud-sun me-2"></i>Open-Meteo Weather Integration</h6>
+                            <p class="small text-muted mb-0">Free external REST API integration without API key requirements or paid dependencies.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <h6 class="fw-bold text-info mb-1"><i class="bi bi-cpu me-2"></i>Pandas & NumPy Data Processing</h6>
+                            <p class="small text-muted mb-0">Data-driven scoring algorithms for soil analysis and crop recommendations based on soil NPK, pH, and climate.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 bg-light">
+                            <h6 class="fw-bold text-danger mb-1"><i class="bi bi-lock me-2"></i>Secure Authentication & Role Access</h6>
+                            <p class="small text-muted mb-0">Role-based access control distinguishing Farmer profiles from System Administrators.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning border-0 mt-4 shadow-sm" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>Disclaimer:</strong> Recommendations and disease treatment data provided in this application are for informational and demonstration purposes only. Farmers should consult qualified local agricultural extension officers before making critical farming decisions.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

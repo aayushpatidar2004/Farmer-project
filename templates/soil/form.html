@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} — Smart Farmer{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-success text-white py-4">
+                    <h4 class="fw-bold mb-0"><i class="bi bi-layers me-2"></i>{{ title }}</h4>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Soil Type *</label>
+                                {{ form.soil_type }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Soil pH (0 – 14) *</label>
+                                {{ form.ph }}
+                                {% if form.ph.errors %}<div class="text-danger small">{{ form.ph.errors.0 }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Nitrogen (N) kg/ha *</label>
+                                {{ form.nitrogen }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Phosphorus (P) kg/ha *</label>
+                                {{ form.phosphorus }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Potassium (K) kg/ha *</label>
+                                {{ form.potassium }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Moisture Percentage (%) *</label>
+                                {{ form.moisture }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Organic Matter (%) *</label>
+                                {{ form.organic_matter }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Notes</label>
+                                {{ form.notes }}
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex justify-content-end gap-2">
+                            <a href="{% url 'soil:list' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success fw-bold px-4"><i class="bi bi-check-circle me-1"></i>Save Soil Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
