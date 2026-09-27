@@ -55,8 +55,7 @@ class FarmerRegistrationForm(UserCreationForm):
         user.last_name = self.cleaned_data['last_name']
         if commit:
             user.save()
-            # Profile is auto-created by signal; update with extra fields
-            profile = user.farmer_profile
+            profile, _ = FarmerProfile.objects.get_or_create(user=user)
             profile.phone = self.cleaned_data.get('phone', '')
             profile.location = self.cleaned_data.get('location', '')
             profile.role = 'farmer'

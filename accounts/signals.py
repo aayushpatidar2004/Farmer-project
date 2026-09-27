@@ -39,9 +39,10 @@ def save_farmer_profile(sender, instance, **kwargs):
     if kwargs.get('raw', False):
         return
 
-    profile = getattr(instance, 'farmer_profile', None)
-    if profile is None:
-        return
+    try:
+        profile = instance.farmer_profile
+    except FarmerProfile.DoesNotExist:
+        profile = FarmerProfile.objects.create(user=instance)
 
     desired_role = 'admin' if instance.is_staff or instance.is_superuser else 'farmer'
     if profile.role != desired_role:

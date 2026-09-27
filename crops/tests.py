@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.urls import reverse
+from accounts.forms import FarmerRegistrationForm
 from crops.models import Crop
 from soil.models import SoilData
 from recommendations.engine import get_recommendations
@@ -21,6 +22,23 @@ class SmartFarmerCoreTests(TestCase):
         """Test that registering a user auto-creates a FarmerProfile."""
         self.assertIsNotNone(self.user.farmer_profile)
         self.assertEqual(self.user.farmer_profile.role, 'farmer')
+
+    def test_missing_profile_does_not_crash_user_save_signal(self):
+        """User saves should never crash when a FarmerProfile is absent or deleted."""
+        user = User.objects.create_user(
+            username='missingprofileuser',
+            email='missingprofile@example.com',
+            password='Password123!'
+        )
+        user.farmer_profile.delete()
+
+        user.is_staff = True
+        user.save()
+
+        user.refresh_from_db()
+        self.assertIsNotNone(user.farmer_profile)
+        self.assertEqual(user.farmer_profile.role, 'admin')
+        self.assertTrue(user.is_staff)
 
     def test_crop_crud(self):
         """Test crop creation, editing, detail, and deletion for logged-in user."""
