@@ -9,7 +9,7 @@
             <h2 class="fw-bold text-success mb-1"><i class="bi bi-currency-rupee me-2"></i>Agricultural Market Prices</h2>
             <p class="text-muted mb-0">Track market prices across mandis, markets, and locations.</p>
         </div>
-        {% if user.is_staff or user.farmer_profile.role == 'admin' %}
+        {% if user_is_admin %}
             <div class="mt-3 mt-md-0">
                 <a href="{% url 'market:add' %}" class="btn btn-success fw-bold shadow-sm">
                     <i class="bi bi-plus-circle me-1"></i>Add Price Record
@@ -90,7 +90,7 @@
                                             <span class="badge bg-success">Verified</span>
                                         {% endif %}
                                     </td>
-                                    {% if user.is_staff or user.farmer_profile.role == 'admin' %}
+                                    {% if user_is_admin %}
                                         <td class="text-end">
                                             <a href="{% url 'market:edit' p.pk %}" class="btn btn-sm btn-outline-secondary me-1"><i class="bi bi-pencil"></i></a>
                                             <a href="{% url 'market:delete' p.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>

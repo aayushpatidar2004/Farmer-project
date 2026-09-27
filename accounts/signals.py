@@ -8,18 +8,28 @@ from .models import FarmerProfile
 def create_farmer_profile(sender, instance, created, **kwargs):
     """Automatically create a FarmerProfile when a new User is created."""
     if created:
-        FarmerProfile.objects.create(user=instance)
+        FarmerProfile.objects.get_or_create(user=instance)
 
 
 @receiver(post_save, sender=FarmerProfile)
 def sync_admin_role_permissions(sender, instance, **kwargs):
-    """Keep Django admin permissions aligned with the profile role without recursion."""
-    is_admin = instance.role == 'admin'
+    """Keep Django admin permissions aligned with the profile role without demoting superusers."""
     user = instance.user
-    if user.is_staff != is_admin or user.is_superuser != is_admin:
+
+    if user.is_superuser:
+        desired_staff = True
+        desired_superuser = True
+    elif instance.role == 'admin':
+        desired_staff = True
+        desired_superuser = False
+    else:
+        desired_staff = False
+        desired_superuser = False
+
+    if user.is_staff != desired_staff or user.is_superuser != desired_superuser:
         User.objects.filter(pk=instance.user_id).update(
-            is_staff=is_admin,
-            is_superuser=is_admin,
+            is_staff=desired_staff,
+            is_superuser=desired_superuser,
         )
 
 

@@ -10,9 +10,10 @@ from .forms import MarketPriceForm
 def is_admin(user):
     """Check if the user has admin role."""
     try:
-        return user.farmer_profile.role == 'admin' or user.is_staff
+        profile = getattr(user, 'farmer_profile', None)
     except Exception:
-        return user.is_staff
+        profile = None
+    return bool(user.is_staff or (profile is not None and profile.role == 'admin'))
 
 
 @login_required

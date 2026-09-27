@@ -39,7 +39,7 @@
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.app_name == 'accounts' and request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'accounts:dashboard' %}">Dashboard</a>
                     </li>
-                    {% if user.is_authenticated and user.farmer_profile.role == 'admin' %}
+                    {% if user.is_authenticated and user_is_admin %}
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" href="{% url 'accounts:admin_dashboard' %}">Admin Dashboard</a>
                     </li>
@@ -61,7 +61,7 @@
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                        {% if user.is_staff or user.farmer_profile.role == 'admin' %}
+                        {% if user_is_admin %}
                         <li class="nav-item">
                             <a class="nav-link text-warning fw-semibold" href="/admin/" target="_blank">
                                 <i class="bi bi-shield-lock me-1"></i>Admin Portal

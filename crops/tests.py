@@ -131,6 +131,23 @@ class SmartFarmerCoreTests(TestCase):
             'message': 'bad'
         }).status_code == 200)
 
+    def test_orphan_user_without_profile_still_renders_homepage(self):
+        """Users missing a FarmerProfile should not crash the homepage or template rendering."""
+        orphan = User.objects.create_user(
+            username='orphanuser',
+            email='orphan@example.com',
+            password='Password123!'
+        )
+        try:
+            orphan.farmer_profile.delete()
+        except Exception:
+            pass
+
+        self.client.login(username='orphanuser', password='Password123!')
+        response = self.client.get(reverse('home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Smart Farmer')
+
     def test_superuser_profile_is_recognized_as_admin_dashboard_access(self):
         """Superusers must also be treated as admin-role users by the custom dashboard."""
         superuser = User.objects.create_superuser(

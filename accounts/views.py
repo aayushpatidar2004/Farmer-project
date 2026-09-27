@@ -29,7 +29,7 @@ def admin_required(view_func):
             profile = FarmerProfile.objects.create(user=request.user)
 
         is_admin_user = request.user.is_superuser or request.user.is_staff
-        is_admin_profile = profile.role == 'admin'
+        is_admin_profile = getattr(profile, 'role', None) == 'admin'
 
         if not (is_admin_profile or is_admin_user):
             messages.error(request, 'Access denied. Only admin-role users can access this dashboard.')
