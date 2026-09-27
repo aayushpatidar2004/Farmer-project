@@ -69,7 +69,7 @@
                                 <th>Unit</th>
                                 <th>Date</th>
                                 <th>Type</th>
-                                {% if user.is_staff or user.farmer_profile.role == 'admin' %}
+                                {% if user_is_admin %}
                                     <th class="text-end">Admin Action</th>
                                 {% endif %}
                             </tr>
