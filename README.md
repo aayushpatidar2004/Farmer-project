@@ -152,13 +152,15 @@ python manage.py test
 
 ---
 
-## Deployment Instructions (Free Tier)
+## Deploy on Render (Free Tier)
 
-This application can be deployed for free on platforms like **Render**, **Railway**, or **Fly.io**:
+1. Push this repository to GitHub and create a free PostgreSQL database with a provider such as Neon. Render's free web service does not include a persistent disk, so SQLite is not suitable for production data.
+2. In Render, choose **New > Blueprint** and connect the repository. The included `render.yaml` creates the free web service.
+3. In the web service environment settings, set `DATABASE_URL` to the database provider's pooled or direct PostgreSQL connection URL. Render will generate `SECRET_KEY` and set `DEBUG=False`.
+4. In the Render environment settings, set `CLOUDINARY_URL` to the Cloudinary URL from your Cloudinary dashboard (`cloudinary://API_KEY:API_SECRET@CLOUD_NAME`). Keep this value secret.
+5. Deploy. Static files are collected during build and database migrations run when the service starts. Upload plant photos again after Cloudinary is configured; files previously stored on Render's temporary disk are not copied automatically.
 
-1. **Database**: Use a free MySQL database instance (e.g., Aiven, PlanetScale, or Railway MySQL).
-2. **Environment Variables**: Configure `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `SECRET_KEY`, and `DEBUG=False` in the platform setting dashboard.
-3. **Static Files**: Use `WhiteNoise` or `python manage.py collectstatic`.
+The free web service may sleep when idle. Cloudinary stores uploaded plant photos independently of Render's temporary filesystem.
 
 ---
 

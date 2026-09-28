@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 
+import dj_database_url
 import pymysql
 pymysql.install_as_MySQLdb()
 
@@ -12,20 +13,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-change-me')
 DEBUG = os.environ.get('DEBUG', 'True').lower() in {'1', 'true', 'yes', 'on'}
-allowed_hosts = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver,0.0.0.0')
-if allowed_hosts == '*':
-    ALLOWED_HOSTS = ['*']
-else:
-    ALLOWED_HOSTS = [host.strip().strip("[]'\"") for host in allowed_hosts.split(',') if host.strip()]
 
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.environ.get(
-        'CSRF_TRUSTED_ORIGINS',
-        'https://*.onrender.com,https://localhost,https://127.0.0.1'
-    ).split(',')
-    if origin.strip()
-]
+allowed_hosts = [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '').split(',') if host.strip()]
+if not allowed_hosts:
+    allowed_hosts = ['localhost', '127.0.0.1', 'testserver', '0.0.0.0']
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    allowed_hosts.append(RENDER_EXTERNAL_HOSTNAME)
+
+ALLOWED_HOSTS = allowed_hosts
+
+csrf_origins = [origin.strip() for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if origin.strip()]
+if not csrf_origins:
+    csrf_origins = ['https://localhost', 'https://127.0.0.1']
+
+if RENDER_EXTERNAL_HOSTNAME:
+    csrf_origins.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
+
+if 'https://*.onrender.com' not in csrf_origins:
+    csrf_origins.append('https://*.onrender.com')
+
+CSRF_TRUSTED_ORIGINS = csrf_origins
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -49,6 +58,10 @@ INSTALLED_APPS = [
     'market',
     'api',
 ]
+
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL')
+if CLOUDINARY_URL:
+    INSTALLED_APPS += ['cloudinary_storage', 'cloudinary']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -83,15 +96,38 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Database configuration: prefer SQLite for local work unless MySQL is explicitly requested.
+# Use an external PostgreSQL URL in hosted environments; keep existing local DB options.
+DATABASE_URL = os.environ.get('DATABASE_URL')
 DB_ENGINE = os.environ.get('DB_ENGINE', 'django.db.backends.sqlite3')
 DB_NAME = os.environ.get('DB_NAME', 'db.sqlite3')
 
-if DB_ENGINE in {'sqlite3', 'django.db.backends.sqlite3'}:
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+elif DB_ENGINE in {'sqlite3', 'django.db.backends.sqlite3'}:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / DB_NAME,
+        }
+    }
+elif DB_ENGINE in {'postgresql', 'django.db.backends.postgresql', 'postgres'}:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DB_NAME', 'neondb'),
+            'USER': os.environ.get('DB_USER', ''),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', ''),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+            'OPTIONS': {
+                'sslmode': os.environ.get('DB_SSLMODE', 'require'),
+            },
         }
     }
 else:
@@ -110,7 +146,7 @@ else:
         }
     }
 
-# Try connecting to database on startup check; if MySQL fails, fallback to sqlite3 in dev
+# Try connecting to the configured database when it is MySQL for local dev fallback.
 try:
     if DATABASES['default']['ENGINE'] == 'django.db.backends.mysql':
         connection_params = {
@@ -123,7 +159,6 @@ try:
         test_conn = pymysql.connect(**connection_params)
         test_conn.close()
 except Exception:
-    # If MySQL connection fails (e.g. MySQL service not running locally), fallback to SQLite for local development & testing
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -155,7 +190,18 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+if CLOUDINARY_URL:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
