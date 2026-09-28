@@ -7,6 +7,7 @@ from crops.models import Crop
 from soil.models import SoilData
 from recommendations.engine import get_recommendations
 from diseases.models import Disease
+from market.models import MarketPrice
 
 
 class SmartFarmerCoreTests(TestCase):
@@ -112,6 +113,21 @@ class SmartFarmerCoreTests(TestCase):
         call_command('load_sample_data')
         self.assertEqual(Crop.objects.filter(farmer=self.user).count(), initial_crop_count)
         self.assertEqual(SoilData.objects.filter(farmer=self.user).count(), initial_soil_count)
+
+    def test_catalog_only_seed_does_not_add_farmer_records(self):
+        call_command('load_sample_data', catalog_only=True)
+
+        self.assertGreater(Disease.objects.count(), 0)
+        self.assertGreater(MarketPrice.objects.count(), 0)
+        self.assertEqual(Crop.objects.count(), 0)
+        self.assertEqual(SoilData.objects.count(), 0)
+
+        disease_count = Disease.objects.count()
+        market_price_count = MarketPrice.objects.count()
+        call_command('load_sample_data', catalog_only=True)
+
+        self.assertEqual(Disease.objects.count(), disease_count)
+        self.assertEqual(MarketPrice.objects.count(), market_price_count)
 
     def test_recommendation_uses_latest_soil_record_when_available(self):
         """Recommendation form should default to the farmer's latest soil readings."""

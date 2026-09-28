@@ -12,7 +12,7 @@ Usage:
 This data is for DEMONSTRATION PURPOSES ONLY and does not represent
 live market prices or certified agricultural advice.
 """
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from datetime import date
 
@@ -411,12 +411,20 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
+            '--catalog-only',
+            action='store_true',
+            help='Load shared disease and market catalogs without creating farmer demo records.',
+        )
+        parser.add_argument(
             '--clear',
             action='store_true',
             help='Remove existing demo sample data before loading new data.',
         )
 
     def handle(self, *args, **options):
+        if options['catalog_only'] and options['clear']:
+            raise CommandError('--clear cannot be combined with --catalog-only.')
+
         if options['clear']:
             self.stdout.write("Clearing existing demo sample data...")
             Crop.objects.filter(is_sample_data=True).delete()
@@ -425,8 +433,8 @@ class Command(BaseCommand):
             Disease.objects.all().delete()
             self.stdout.write(self.style.WARNING("Existing sample data cleared."))
 
-        farmers = list(User.objects.order_by('id'))
-        if not farmers:
+        farmers = [] if options['catalog_only'] else list(User.objects.order_by('id'))
+        if not farmers and not options['catalog_only']:
             farmers = [
                 User.objects.create_user(username='demo_farmer_1', email='demo1@example.com', password='DemoPass123!'),
                 User.objects.create_user(username='demo_farmer_2', email='demo2@example.com', password='DemoPass123!'),
