@@ -4,7 +4,7 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --no-input
-    startCommand: python manage.py migrate --noinput && python manage.py load_sample_data --catalog-only && gunicorn config.wsgi:application
+    startCommand: python manage.py migrate --noinput && python manage.py load_sample_data --catalog-only && python manage.py bootstrap_render_admin && gunicorn config.wsgi:application
     envVars:
       - key: DATABASE_URL
         sync: false
@@ -12,3 +12,9 @@ services:
         generateValue: true
       - key: DEBUG
         value: "False"
+      - key: RENDER_ADMIN_USERNAME
+        sync: false
+      - key: RENDER_ADMIN_EMAIL
+        sync: false
+      - key: RENDER_ADMIN_PASSWORD
+        sync: false
