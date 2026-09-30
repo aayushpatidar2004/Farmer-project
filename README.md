@@ -164,6 +164,18 @@ python manage.py test
 
 The free web service may sleep when idle. Cloudinary stores uploaded plant photos independently of Render's temporary filesystem.
 
+## Deploy on Vercel
+
+1. Import this GitHub repository in Vercel. Keep the **Root Directory** as `./` and choose the **Django** preset. Vercel detects `manage.py` automatically; leave the Build Command and Output Directory at their defaults.
+2. Add these project environment variables for **Production** and **Preview**:
+   - `SECRET_KEY`: a new long, random Django secret.
+   - `DEBUG`: `False`.
+   - `DATABASE_URL`: a persistent PostgreSQL connection URL (the same external database used by Render can be reused if it accepts Vercel connections).
+   - `CLOUDINARY_URL`: optional, but required for uploaded plant photos to persist between function invocations.
+3. Deploy. Vercel provides a separate `*.vercel.app` URL; it does not reuse the Render URL. The app accepts Vercel deployment hosts and trusts their HTTPS origins automatically.
+
+Vercel runs Django as a serverless function, so do not use the local SQLite database for production. Run `python manage.py migrate` against the configured production database once before first use. Vercel serves collected static files from its CDN automatically.
+
 ---
 
 ## Disclaimer

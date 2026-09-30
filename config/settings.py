@@ -22,6 +22,14 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     allowed_hosts.append(RENDER_EXTERNAL_HOSTNAME)
 
+# Vercel sets these hostnames for preview and production deployments.
+VERCEL_URL = os.environ.get('VERCEL_URL')
+VERCEL_PROJECT_PRODUCTION_URL = os.environ.get('VERCEL_PROJECT_PRODUCTION_URL')
+for vercel_hostname in (VERCEL_URL, VERCEL_PROJECT_PRODUCTION_URL):
+    if vercel_hostname:
+        allowed_hosts.append(vercel_hostname)
+allowed_hosts.append('.vercel.app')
+
 ALLOWED_HOSTS = allowed_hosts
 
 csrf_origins = [origin.strip() for origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if origin.strip()]
@@ -30,6 +38,11 @@ if not csrf_origins:
 
 if RENDER_EXTERNAL_HOSTNAME:
     csrf_origins.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
+
+for vercel_hostname in (VERCEL_URL, VERCEL_PROJECT_PRODUCTION_URL):
+    if vercel_hostname:
+        csrf_origins.append(f'https://{vercel_hostname}')
+csrf_origins.append('https://*.vercel.app')
 
 if 'https://*.onrender.com' not in csrf_origins:
     csrf_origins.append('https://*.onrender.com')
