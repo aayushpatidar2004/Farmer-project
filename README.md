@@ -8,7 +8,7 @@
 
 A full-stack, production-ready web application built for modern agricultural management. Features crop cycle tracking, soil analysis, data-driven crop recommendations via Pandas/NumPy, live weather forecasts via Open-Meteo, crop disease remedies with safety protocols, and market price tracking.
 
-**Live demo:** [Smart Farmer on Render](https://farmer-project-1-uel4.onrender.com/)
+**Live demo:** [Smart Farmer on Vercel](https://farmer-project-1dl6.vercel.app/)
 
 ---
 
